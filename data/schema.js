@@ -1,24 +1,28 @@
 import {
-    GraphQLSchema,
-    GraphQLObjectType,
-    GraphQLInt,
-    GraphQLString,
+    buildSchema,
 } from 'graphql';
+import foods from './foods.json';
 
-const schema = new GraphQLSchema({
-    query: new GraphQLObjectType({
-        name: 'Query',
-        fields: () => ({
-            counter: {
-                type: GraphQLInt,
-                resolve: () => 42,
-            },
-            message: {
-                type: GraphQLString,
-                resolve: () => 'The message',
-            }
-        })
-    })
-})
+export const schema = buildSchema(`
+    type Query {
+        foods: [Food]
+        foodById(number: String): [Food]
+        foodByName(name: String): [Food]
+    },
+    type Food {
+        number: String
+        name: String
+        weight: String
+        group: String
+    }
+`);
 
-export default schema;
+const foodById = (args) => [foods.find(data => data.number === args.number)];
+
+const foodByName = (args) => foods.filter(data => data.name.includes(args.name));
+
+export const root = {
+    foodById,
+    foodByName,
+    foods: () => foods,
+};
