@@ -1,10 +1,10 @@
 const fs = require('fs');
 const convert = require('xml-js');
 
-const xmlPath = `${__dirname}/data/20190701.xml`;
+const xmlPath = `${__dirname}/data/foods.xml`;
 const jsonPath = `${__dirname}/data/foods.json`;
 
-const getAllFoods = async () => {
+const convertXMLtoJSON = async () => {
     console.log('Start reading XML file..');
     const xmlString = await fs.readFileSync(xmlPath);
     console.log('Finished reading XML file!');
@@ -24,4 +24,4 @@ const getAllFoods = async () => {
     console.log('Finished writing json to file!');
 };
 
-getAllFoods();
+convertXMLtoJSON();

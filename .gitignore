@@ -1,1 +1,4 @@
 node_modules
+data/foods.xml
+data/foods.json
+public/bundle.js
