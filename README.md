@@ -1,11 +1,11 @@
-### GraphQL learning project
+## GraphQL learning project
 
 A meal calorie calculator for learning purposes.
 
-## Prerequisites
+### Prerequisites
 * webpack-cli `yarn global add webpack-cli`
 
-## Install the project
+### Install the project
 
 ```
 git clone https://github.com/oakis/calorie-per-meal.git
