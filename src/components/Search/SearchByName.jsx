@@ -100,6 +100,7 @@ export class SearchByName extends Component {
                     style={this.style.form}
                 >
                     <input
+                        placeholder="Sök..."
                         style={this.style.input}
                         onChange={this.onInputChange}
                         value={searchInput}
