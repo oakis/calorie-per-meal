@@ -43,8 +43,8 @@ export class Recipe extends Component {
                     <em>Kcal</em>
                 </div>
                 <ul style={this.style.ul}>
-                    {this.props.data.map(item => (
-                        <li style={this.style.li}>
+                    {this.props.data.map((item, i) => (
+                        <li style={this.style.li} key={i}>
                             <span>{item.name}</span>
                             <span>{item.kcal}</span>
                         </li>

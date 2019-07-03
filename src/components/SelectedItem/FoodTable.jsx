@@ -26,8 +26,8 @@ export class FoodTable extends PureComponent {
                     </tr>
                 </thead>
                 <tbody>
-                {data.nutrition.map(item => (
-                    <tr>
+                {data.nutrition.map((item, i) => (
+                    <tr key={i}>
                         <td>{item.name}</td>
                         <td>{item.value}</td>
                         <td>{item.unit}</td>
