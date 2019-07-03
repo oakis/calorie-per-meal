@@ -8,7 +8,8 @@ export class SelectedItem extends PureComponent {
     style = {
         wrapper: {
             alignSelf: 'flex-end',
-            width: '50%',
+            flex: 1,
+            marginLeft: 4,
             padding: 15,
             ...styles.boxWithShadow,
         },
@@ -25,7 +26,7 @@ export class SelectedItem extends PureComponent {
     }
 
     render() {
-        const { data } = this.props;
+        const { addItem, data } = this.props;
         return (
             <div style={this.style.wrapper}>
                 <div style={this.style.header.wrapper}>
@@ -37,6 +38,10 @@ export class SelectedItem extends PureComponent {
                     <div>
                         <Button
                             icon="add"
+                            onClick={() => addItem({
+                                name: data.name,
+                                kcal: data.nutrition.find(item => item.name === 'Energi (kcal)').value,
+                            })}
                         />
                     </div>
                 </div>

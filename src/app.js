@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { SelectedItem } from './components';
-import SearchByName from './components/Search/SearchByName.jsx';
+import { SelectedItem, SearchByName, Recipe } from './components';
 
 class App extends React.Component {
 
     state = {
+        recipes: [],
         selectedItem: {},
     }
 
@@ -26,6 +26,12 @@ class App extends React.Component {
         },
     }
 
+    addItem = (item) => {
+        this.setState((state, props) => ({
+            recipes: [...state.recipes, item]
+        }));
+    }
+
     onItemClick = ({ selectedItem }) => {
         this.setState({
             selectedItem,
@@ -34,17 +40,22 @@ class App extends React.Component {
 
     render() {
         const {
+            recipes,
             selectedItem,
         } = this.state;
-        
         return (
             <div style={this.style.wrapper}>
                 <h3 style={this.style.title}>GraphQL calorie calculator</h3>
                 <br />
                 <SearchByName onItemClick={this.onItemClick} />
-                {selectedItem.name !== undefined &&
-                    <SelectedItem data={selectedItem} />
-                }
+                <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}>
+                    {recipes.length > 0 &&
+                        <Recipe data={recipes} />
+                    }
+                    {selectedItem.name !== undefined &&
+                        <SelectedItem data={selectedItem} addItem={this.addItem} />
+                    }
+                </div>
             </div>
         );
     }

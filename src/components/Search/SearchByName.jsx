@@ -3,7 +3,7 @@ import Button from '../common/Button.jsx';
 import graphql from '../../helpers/graphql';
 import styles from '../../styles';
 
-class SearchByName extends Component {
+export class SearchByName extends Component {
     state = {
         searchInput: '',
         searchResults: [],
@@ -147,5 +147,3 @@ class SearchByName extends Component {
         );
     };
 }
-
-export default SearchByName;
