@@ -14,6 +14,12 @@ export const schema = buildSchema(`
         name: String
         weight: String
         group: String
+        nutrition: [Nutrition]
+    }
+    type Nutrition {
+        name: String
+        value: String
+        unit: String
     }
 `);
 

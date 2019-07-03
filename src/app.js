@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import graphql from './helpers/graphql';
+import MaterialIcon from 'material-icons-react';
 
 class App extends React.Component {
 
     state = {
         searchInput: '',
         searchResults: [],
+        selectedItem: {},
     }
 
     boxWithShadow = {
@@ -42,11 +44,14 @@ class App extends React.Component {
             ...this.boxWithShadow,
         },
         button: {
-            padding: '15px 45px',
+            display: 'flex',
+            padding: '15px 20px',
             marginLeft: 8,
             fontSize: '1.2em',
             backgroundColor: 'steelblue',
-            color: '#eee'
+            color: '#eee',
+            whiteSpace: 'nowrap',
+            ...this.boxWithShadow,
         },
         searchResults: {
             position: 'absolute',
@@ -66,7 +71,35 @@ class App extends React.Component {
             fontSize: '1em',
             listStyleType: 'none',
             cursor: 'pointer',
-            padding: '5px 15px'
+            padding: '5px 15px',
+        },
+        selectedItem: {
+            wrapper: {
+                alignSelf: 'flex-end',
+                width: '50%',
+                padding: 15,
+                ...this.boxWithShadow,
+            },
+            header: {
+                wrapper: {
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                }
+            },
+            name: {
+                fontSize: '1.5em',
+                marginBottom: 8,
+            },
+            table: {
+                width: '100%',
+                textAlign: 'left',
+                marginTop: 15,
+                borderCollapse: 'collapse',
+            },
+            th: {
+                borderBottom: '1px solid #555',
+                padding: '1px 0px',
+            },
         },
     }
 
@@ -81,8 +114,6 @@ class App extends React.Component {
                 foodByName(name: "${this.state.searchInput}") {
                     name
                     number
-                    weight
-                    group
                 }
             }
         `);
@@ -93,9 +124,42 @@ class App extends React.Component {
         });
     }
 
+    foodById = async (event) => {
+        event.preventDefault();
+        const { foodById } = await graphql(`
+            query GetFoodById {
+                foodById(number: "${event.currentTarget.dataset.id}") {
+                    name
+                    number
+                    weight
+                    group
+                    nutrition {
+                        name
+                        value
+                        unit
+                    }
+                }
+            }
+        `);
+        console.log('Found item', foodById[0]);
+        return foodById[0];
+    }
+
     onInputChange = (event) => this.setState({ searchInput: event.target.value });
 
+    onItemClick = async (event) => {
+        this.setState({
+            selectedItem: await this.foodById(event),
+            searchResults: [],
+        });
+    }
+
     render() {
+        const {
+            searchInput,
+            searchResults,
+            selectedItem,
+        } = this.state;
         const formRefReady = this.formRefReady();
         return (
             <div style={this.style.wrapper}>
@@ -108,9 +172,11 @@ class App extends React.Component {
                     <input
                         style={this.style.input}
                         onChange={this.onInputChange}
-                        value={this.state.searchInput}
+                        value={searchInput}
                     />
-                    <button onClick={this.foodByName} style={this.style.button}>Sök</button>
+                    <button onClick={this.foodByName} style={this.style.button}>
+                        <MaterialIcon icon="search" size="large" />
+                    </button>
                 </form>
                 <br />
                 <ul
@@ -120,11 +186,11 @@ class App extends React.Component {
                             top: formRefReady ? (this.formRef.current.offsetTop + this.formRef.current.scrollHeight) : 0,
                             left: formRefReady ? this.formRef.current.offsetLeft : 0,
                             width: formRefReady ? this.formRef.current.scrollWidth : 0,
-                            visibility: formRefReady && this.state.searchResults.length > 0 ? 'visible' : 'hidden',
+                            visibility: formRefReady && searchResults.length > 0 ? 'visible' : 'hidden',
                         }
                     }
                 >
-                    {this.state.searchResults.map(food => (
+                    {searchResults.map(food => (
                         <li
                             key={food.number}
                             style={this.style.searchItem}
@@ -134,9 +200,45 @@ class App extends React.Component {
                             onMouseOut={e => {
                                 e.currentTarget.style.backgroundColor = '';
                             }}
+                            onClick={this.onItemClick}
+                            data-id={food.number}
                         >{food.name}</li>
                     ))}
                 </ul>
+                {selectedItem.name !== undefined &&
+                    <div style={this.style.selectedItem.wrapper}>
+                        <div style={this.style.selectedItem.header.wrapper}>
+                            <div style={this.style.selectedItem.header.left}>
+                                <div style={this.style.selectedItem.name}>{selectedItem.name}</div>
+                                <div><em>Vikt: {selectedItem.weight}g</em></div>
+                                <div><em>Grupp: {selectedItem.group}</em></div>
+                            </div>
+                            <div style={this.style.selectedItem.header.right}>
+                                <button style={this.style.button}>
+                                    <MaterialIcon icon="add" size="large" />
+                                </button>
+                            </div>
+                        </div>
+                        <table style={this.style.selectedItem.table}>
+                            <thead>
+                                <tr>
+                                    <th style={this.style.selectedItem.th}>Namn</th>
+                                    <th style={this.style.selectedItem.th}>Värde</th>
+                                    <th style={this.style.selectedItem.th}>Enhet</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {selectedItem.nutrition.map(item => (
+                                <tr>
+                                    <td>{item.name}</td>
+                                    <td>{item.value}</td>
+                                    <td>{item.unit}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+                }
             </div>
         );
     }

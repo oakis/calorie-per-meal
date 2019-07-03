@@ -12,13 +12,20 @@ const convertXMLtoJSON = async () => {
     const jsonString = convert.xml2json(xmlString, { compact: true, ignoreDeclaration: true, spaces: 2, ignoreAttributes: true });
     console.log('Finished converting XML to JSON!');
     const jsonParsed = JSON.parse(jsonString).LivsmedelDataset.LivsmedelsLista.Livsmedel;
-    const jsonFormatted = jsonParsed.map(obj => ({
-        number: obj.Nummer._text,
-        name: obj.Namn._text,
-        weight: obj.ViktGram._text,
-        group: obj.Huvudgrupp._text,
-        //nutrition: obj.Naringsvarden.Naringsvarde,
-    }));
+    const jsonFormatted = jsonParsed.map(obj => {
+        const nutrition = obj.Naringsvarden.Naringsvarde;
+        return {
+            number: obj.Nummer._text,
+            name: obj.Namn._text,
+            weight: obj.ViktGram._text,
+            group: obj.Huvudgrupp._text,
+            nutrition: nutrition.map(obj => ({
+                name: obj.Namn._text,
+                value: obj.Varde._text,
+                unit: obj.Enhet._text,
+            }))
+        }
+    });
     console.log('Start writing json to file..');
     fs.writeFileSync(jsonPath, JSON.stringify(jsonFormatted));
     console.log('Finished writing json to file!');
