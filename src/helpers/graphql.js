@@ -11,5 +11,5 @@ export default (query) => fetch(
         })
     })
     .then(json => json.json())
-    .then(data => ({ data }))
+    .then(({ data }) => data)
     .catch(console.log);
