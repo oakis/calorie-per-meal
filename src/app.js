@@ -27,8 +27,16 @@ class App extends React.Component {
     }
 
     addItem = (item) => {
-        this.setState((state, props) => ({
+        this.setState(state => ({
             recipes: [...state.recipes, item]
+        }));
+    }
+
+    removeItem = (item) => {
+        console.log('removeItem', item);
+        console.log('state', this.state.recipes);
+        this.setState(state => ({
+            recipes: state.recipes.filter(recipe => recipe.number !== item.number),
         }));
     }
 
@@ -50,7 +58,7 @@ class App extends React.Component {
                 <SearchByName onItemClick={this.onItemClick} />
                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}>
                     {recipes.length > 0 &&
-                        <Recipe data={recipes} />
+                        <Recipe data={recipes} removeItem={this.removeItem} />
                     }
                     {selectedItem.name !== undefined &&
                         <SelectedItem data={selectedItem} addItem={this.addItem} />

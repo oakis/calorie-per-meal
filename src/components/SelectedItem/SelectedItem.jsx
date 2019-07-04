@@ -41,6 +41,7 @@ export class SelectedItem extends PureComponent {
                             onClick={() => addItem({
                                 name: data.name,
                                 kcal: data.nutrition.find(item => item.name === 'Energi (kcal)').value,
+                                number: data.number,
                             })}
                         />
                     </div>
