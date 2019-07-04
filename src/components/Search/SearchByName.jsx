@@ -33,6 +33,7 @@ export class SearchByName extends Component {
             ...styles.boxWithShadow,
             paddingInlineStart: 0,
             padding: '15px 0',
+            zIndex: 1,
         },
         searchItem: {
             height: '1.5em',

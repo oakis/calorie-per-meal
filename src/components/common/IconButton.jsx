@@ -7,6 +7,8 @@ class IconButton extends PureComponent {
         color: 'transparant',
         cursor: 'pointer',
         padding: 0,
+        position: 'relative',
+        top: 1,
     }
     render() {
         const { onClick, ...rest } = this.props;

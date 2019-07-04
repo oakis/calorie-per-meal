@@ -6,7 +6,7 @@ import { SelectedItem, SearchByName, Recipe } from './components';
 class App extends React.Component {
 
     state = {
-        recipes: [],
+        ingredients: [],
         selectedItem: {},
     }
 
@@ -50,17 +50,18 @@ class App extends React.Component {
     addItem = async (number) => {
         const item = await this.foodById(number);
         this.setState(state => ({
-            recipes: [...state.recipes, {
+            ingredients: [...state.ingredients, {
                 name: item.name,
                 kcal: item.nutrition.find(nutrition => nutrition.name === 'Energi (kcal)').value,
                 number: item.number,
+                weight: item.weight,
             }]
         }));
     }
 
     removeItem = (item) => {
         this.setState(state => ({
-            recipes: state.recipes.filter(recipe => recipe.number !== item.number),
+            ingredients: state.ingredients.filter(recipe => recipe.number !== item.number),
         }));
     }
 
@@ -70,9 +71,29 @@ class App extends React.Component {
         });
     }
 
+    updateWeight = (weight, item) => {
+        this.setState((state) => {
+            const findIndex = state.ingredients.findIndex((obj => obj.number === item.number));
+            return {
+                ...state,
+                ingredients: [
+                    ...state.ingredients.map((ingredient, index) => {
+                        if (index === findIndex) {
+                            return {
+                                ...item,
+                                weight,
+                            }
+                        }
+                        return ingredient;
+                    }),
+                ]
+            }
+        })
+    }
+
     render() {
         const {
-            recipes,
+            ingredients,
             selectedItem,
         } = this.state;
         return (
@@ -81,8 +102,8 @@ class App extends React.Component {
                 <br />
                 <SearchByName onItemClick={this.addItem} />
                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}>
-                    {recipes.length > 0 &&
-                        <Recipe data={recipes} removeItem={this.removeItem} showItem={this.showItem} />
+                    {ingredients.length > 0 &&
+                        <Recipe data={ingredients} removeItem={this.removeItem} showItem={this.showItem} onChangeInput={(weight, item) => this.updateWeight(weight, item)} />
                     }
                     {selectedItem.name !== undefined &&
                         <SelectedItem data={selectedItem} />
