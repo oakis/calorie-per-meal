@@ -64,27 +64,6 @@ export class SearchByName extends Component {
         });
     }
 
-    foodById = async (event) => {
-        event.preventDefault();
-        const { foodById } = await graphql(`
-            query GetFoodById {
-                foodById(number: "${event.currentTarget.dataset.id}") {
-                    name
-                    number
-                    weight
-                    group
-                    nutrition {
-                        name
-                        value
-                        unit
-                    }
-                }
-            }
-        `);
-        console.log('Found item', foodById[0]);
-        return foodById[0];
-    }
-
     onInputChange = (event) => this.setState({ searchInput: event.target.value });
 
     render() {
@@ -132,15 +111,13 @@ export class SearchByName extends Component {
                             onMouseOut={e => {
                                 e.currentTarget.style.backgroundColor = '';
                             }}
-                            onClick={async (event) => {
-                                this.props.onItemClick({
-                                    selectedItem: await this.foodById(event),
-                                })
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                this.props.onItemClick(food.number);
                                 this.setState({
                                     searchResults: [],
                                 })
                             }}
-                            data-id={food.number}
                         >{food.name}</li>
                     ))}
                 </ul>

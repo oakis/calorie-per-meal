@@ -26,7 +26,7 @@ export class SelectedItem extends PureComponent {
     }
 
     render() {
-        const { addItem, data } = this.props;
+        const { data } = this.props;
         return (
             <div style={this.style.wrapper}>
                 <div style={this.style.header.wrapper}>
@@ -34,16 +34,6 @@ export class SelectedItem extends PureComponent {
                         <div style={this.style.name}>{data.name}</div>
                         <div><em>Vikt: {data.weight}g</em></div>
                         <div><em>Grupp: {data.group}</em></div>
-                    </div>
-                    <div>
-                        <Button
-                            icon="add"
-                            onClick={() => addItem({
-                                name: data.name,
-                                kcal: data.nutrition.find(item => item.name === 'Energi (kcal)').value,
-                                number: data.number,
-                            })}
-                        />
                     </div>
                 </div>
                 <FoodTable data={data} />

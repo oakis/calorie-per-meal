@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import graphql from './helpers/graphql';
 import { SelectedItem, SearchByName, Recipe } from './components';
 
 class App extends React.Component {
@@ -26,23 +27,46 @@ class App extends React.Component {
         },
     }
 
-    addItem = (item) => {
+    foodById = async (number) => {
+        const { foodById } = await graphql(`
+            query GetFoodById {
+                foodById(number: "${number}") {
+                    name
+                    number
+                    weight
+                    group
+                    nutrition {
+                        name
+                        value
+                        unit
+                    }
+                }
+            }
+        `);
+        console.log('Found item', foodById[0]);
+        return foodById[0];
+    }
+
+    addItem = async (number) => {
+        const item = await this.foodById(number);
         this.setState(state => ({
-            recipes: [...state.recipes, item]
+            recipes: [...state.recipes, {
+                name: item.name,
+                kcal: item.nutrition.find(nutrition => nutrition.name === 'Energi (kcal)').value,
+                number: item.number,
+            }]
         }));
     }
 
     removeItem = (item) => {
-        console.log('removeItem', item);
-        console.log('state', this.state.recipes);
         this.setState(state => ({
             recipes: state.recipes.filter(recipe => recipe.number !== item.number),
         }));
     }
 
-    onItemClick = ({ selectedItem }) => {
+    showItem = async (number) => {
         this.setState({
-            selectedItem,
+            selectedItem: await this.foodById(number),
         });
     }
 
@@ -55,13 +79,13 @@ class App extends React.Component {
             <div style={this.style.wrapper}>
                 <h3 style={this.style.title}>GraphQL calorie calculator</h3>
                 <br />
-                <SearchByName onItemClick={this.onItemClick} />
+                <SearchByName onItemClick={this.addItem} />
                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}>
                     {recipes.length > 0 &&
-                        <Recipe data={recipes} removeItem={this.removeItem} />
+                        <Recipe data={recipes} removeItem={this.removeItem} showItem={this.showItem} />
                     }
                     {selectedItem.name !== undefined &&
-                        <SelectedItem data={selectedItem} addItem={this.addItem} />
+                        <SelectedItem data={selectedItem} />
                     }
                 </div>
             </div>

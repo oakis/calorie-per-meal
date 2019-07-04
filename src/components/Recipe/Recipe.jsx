@@ -35,6 +35,7 @@ export class Recipe extends Component {
             alignItems: 'center',
             padding: 8,
             marginBottom: '0.3em',
+            cursor: 'pointer',
             ...styles.boxWithShadow,
         },
         liFirstItem: {
@@ -53,7 +54,7 @@ export class Recipe extends Component {
                 </div>
                 <ul style={this.style.ul}>
                     {this.props.data.map((item, i) => (
-                        <li style={this.style.li} key={i}>
+                        <li style={this.style.li} key={i} onClick={() => this.props.showItem(item.number)}>
                             <div style={this.style.liFirstItem}>
                                 <IconButton
                                     onClick={() => this.props.removeItem(item)}
