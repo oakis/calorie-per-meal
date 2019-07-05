@@ -113,7 +113,7 @@ export class Recipe extends Component {
                     <div style={this.style.result}>
                         <em>Total vikt:</em>
                         <span style={this.style.resultNumber}>
-                            {this.props.data.map(item => Number.parseInt(item.weight, 10)).reduce((a, b) => a + b)} gram
+                            {this.props.data.map(item => item.weight <= 0 ? 0 : Number.parseInt(item.weight, 10)).reduce((a, b) => a + b)} gram
                         </span>
                     </div>
                     <div style={this.style.result}>
