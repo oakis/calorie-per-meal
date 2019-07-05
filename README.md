@@ -24,10 +24,10 @@ yarn fetch-data
 
 Run the backend:
 ```
-yarn start
+yarn server
 ```
 
 Run the frontend:
 ```
-webpack-cli -w -d
+yarn start
 ```
