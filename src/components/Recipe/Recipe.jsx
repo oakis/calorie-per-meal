@@ -94,6 +94,7 @@ export class Recipe extends Component {
                                     value={item.weight}
                                     onChange={(e) => this.onChangeInput(e.target.value, item)}
                                     onClick={e => e.stopPropagation()}
+                                    type="number"
                                 />
                             </td>
                             <td style={this.style.td}>{this.calculateKcal(item)}</td>
