@@ -8,7 +8,6 @@ export class Recipe extends Component {
         wrapper: {
             alignSelf: 'flex-start',
             flex: 1,
-            marginRight: 4,
             padding: 30,
             ...styles.boxWithShadow,
         },
@@ -66,7 +65,7 @@ export class Recipe extends Component {
 
     render() {
         return (
-            <div style={this.style.wrapper}>
+            <div style={{...this.style.wrapper, ...this.props.style}}>
                 <div style={{ ...this.style.name, marginBottom: 30 }}>Recept</div>
                 <table style={this.style.table}>
                     <thead>

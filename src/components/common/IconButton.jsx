@@ -11,9 +11,9 @@ class IconButton extends PureComponent {
         top: 1,
     }
     render() {
-        const { onClick, ...rest } = this.props;
+        const { onClick, style, ...rest } = this.props;
         return (
-            <button onClick={(e) => { e.stopPropagation(); onClick(); }} style={this.style}>
+            <button onClick={(e) => { e.stopPropagation(); onClick(); }} style={{ ...this.style, ...style }}>
                 <MaterialIcon {...rest} />
             </button>
         );

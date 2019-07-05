@@ -33,7 +33,10 @@ export class SearchByName extends Component {
             ...styles.boxWithShadow,
             paddingInlineStart: 0,
             padding: '15px 0',
+            margin: '-2px 0 0 0',
             zIndex: 1,
+            borderTopLeftRadius: 0,
+            borderTopRightRadius: 0,
         },
         searchItem: {
             height: '1.5em',
@@ -44,9 +47,9 @@ export class SearchByName extends Component {
         },
     }
 
-    formRef = React.createRef()
+    inputRef = React.createRef()
 
-    formRefReady = () => (this.formRef && this.formRef.current !== null) === true;
+    inputRefReady = () => (this.inputRef && this.inputRef.current !== null) === true;
 
     foodByName = async (event) => {
         event.preventDefault();
@@ -72,14 +75,14 @@ export class SearchByName extends Component {
             searchInput,
             searchResults,
         } = this.state;
-        const formRefReady = this.formRefReady();
+        const inputRefReady = this.inputRefReady();
         return (
             <Fragment>
                 <form
-                    ref={this.formRef}
                     style={this.style.form}
                 >
                     <input
+                        ref={this.inputRef}
                         placeholder="Sök..."
                         style={this.style.input}
                         onChange={this.onInputChange}
@@ -95,10 +98,10 @@ export class SearchByName extends Component {
                     style={
                         {
                             ...this.style.searchResults,
-                            top: formRefReady ? (this.formRef.current.offsetTop + this.formRef.current.scrollHeight) : 0,
-                            left: formRefReady ? this.formRef.current.offsetLeft : 0,
-                            width: formRefReady ? this.formRef.current.scrollWidth : 0,
-                            visibility: formRefReady && searchResults.length > 0 ? 'visible' : 'hidden',
+                            top: inputRefReady ? (this.inputRef.current.offsetTop + this.inputRef.current.scrollHeight) : 0,
+                            left: inputRefReady ? this.inputRef.current.offsetLeft : 0,
+                            width: inputRefReady ? this.inputRef.current.scrollWidth : 0,
+                            visibility: inputRefReady && searchResults.length > 0 ? 'visible' : 'hidden',
                         }
                     }
                 >

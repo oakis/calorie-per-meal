@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { FoodTable } from './FoodTable.jsx';
 import Button from '../common/Button.jsx';
 import styles from '../../styles/index.js';
+import IconButton from '../common/IconButton.jsx';
 
 export class SelectedItem extends PureComponent {
 
@@ -9,7 +10,6 @@ export class SelectedItem extends PureComponent {
         wrapper: {
             alignSelf: 'flex-end',
             flex: 1,
-            marginLeft: 4,
             padding: 15,
             ...styles.boxWithShadow,
         },
@@ -28,13 +28,20 @@ export class SelectedItem extends PureComponent {
     render() {
         const { data } = this.props;
         return (
-            <div style={this.style.wrapper}>
+            <div style={{...this.style.wrapper, ...this.props.style}}>
                 <div style={this.style.header.wrapper}>
-                    <div style={this.style.header.left}>
+                    <div>
                         <div style={this.style.name}>{data.name}</div>
                         <div><em>Vikt: {data.weight}g</em></div>
                         <div><em>Grupp: {data.group}</em></div>
                     </div>
+                    <IconButton
+                        onClick={() => this.props.clearSelectedItem()}
+                        icon="close"
+                        color="tomato"
+                        size="small"
+                        style={{ alignSelf: 'flex-start' }}
+                    />
                 </div>
                 <FoodTable data={data} />
             </div>

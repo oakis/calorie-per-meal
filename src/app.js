@@ -20,10 +20,12 @@ class App extends React.Component {
             margin: 'auto',
         },
         title: {
-            fontFamily: 'Product Sans Black Regular',
-            fontSize: '2.5em',
-            fontWeight: 'bold',
+            fontFamily: 'Product Sans Thin Regular',
+            fontSize: '4em',
+            fontWeight: '100',
             textAlign: 'center',
+            color: 'steelblue',
+            margin: '0.5em 0',
         },
     }
 
@@ -91,6 +93,10 @@ class App extends React.Component {
         })
     }
 
+    clearSelectedItem = () => {
+        this.setState({ selectedItem: {} });
+    }
+
     render() {
         const {
             ingredients,
@@ -98,15 +104,24 @@ class App extends React.Component {
         } = this.state;
         return (
             <div style={this.style.wrapper}>
-                <h3 style={this.style.title}>GraphQL calorie calculator</h3>
-                <br />
+                <h1 style={this.style.title}>CALORIE CALCULATOR</h1>
                 <SearchByName onItemClick={this.addItem} />
                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}>
                     {ingredients.length > 0 &&
-                        <Recipe data={ingredients} removeItem={this.removeItem} showItem={this.showItem} onChangeInput={(weight, item) => this.updateWeight(weight, item)} />
+                        <Recipe
+                            data={ingredients}
+                            removeItem={this.removeItem}
+                            showItem={this.showItem}
+                            onChangeInput={(weight, item) => this.updateWeight(weight, item)}
+                            style={selectedItem.name ? { marginRight: 8 } : null}
+                        />
                     }
                     {selectedItem.name !== undefined &&
-                        <SelectedItem data={selectedItem} />
+                        <SelectedItem
+                            data={selectedItem}
+                            style={selectedItem.name ? { marginLeft: 8 } : null}
+                            clearSelectedItem={this.clearSelectedItem}
+                        />
                     }
                 </div>
             </div>
