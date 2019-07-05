@@ -116,6 +116,7 @@ export class SearchByName extends Component {
                                 e.stopPropagation();
                                 this.props.onItemClick(food.number);
                                 this.setState({
+                                    searchInput: '',
                                     searchResults: [],
                                 })
                             }}
