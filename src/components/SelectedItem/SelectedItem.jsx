@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { FoodTable } from './FoodTable.jsx';
-import Button from '../common/Button.jsx';
 import styles from '../../styles/index.js';
 import IconButton from '../common/IconButton.jsx';
 

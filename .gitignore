@@ -1,4 +1,5 @@
 node_modules
 data/foods.xml
 data/foods.json
+data/recipes.json
 public/bundle.js

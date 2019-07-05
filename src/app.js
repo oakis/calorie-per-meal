@@ -112,7 +112,7 @@ class App extends React.Component {
                             data={ingredients}
                             removeItem={this.removeItem}
                             showItem={this.showItem}
-                            onChangeInput={(weight, item) => this.updateWeight(weight, item)}
+                            onChangeWeight={(weight, item) => this.updateWeight(weight, item)}
                             style={selectedItem.name ? { marginRight: 8 } : null}
                         />
                     }

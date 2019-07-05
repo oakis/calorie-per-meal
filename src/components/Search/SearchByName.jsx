@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import MaterialIcon from 'material-icons-react';
 import Button from '../common/Button.jsx';
 import graphql from '../../helpers/graphql';
 import styles from '../../styles';
@@ -89,9 +90,11 @@ export class SearchByName extends Component {
                         value={searchInput}
                     />
                     <Button
-                        icon="search"
                         onClick={this.foodByName}
-                    />
+                        color="steelblue"
+                    >
+                        <MaterialIcon icon="search" size="large" />
+                    </Button>
                 </form>
                 <br />
                 <ul

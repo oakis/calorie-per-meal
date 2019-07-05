@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import styles from '../../styles';
 import IconButton from '../common/IconButton.jsx';
+import MaterialIcon from 'material-icons-react';
+import Button from '../common/Button.jsx';
 
 export class Recipe extends Component {
+
+    state = {
+        recipeName: '',
+    }
 
     style = {
         wrapper: {
@@ -38,30 +44,62 @@ export class Recipe extends Component {
         thead: {
             textAlign: 'left',
         },
-        footer: {
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            marginTop: 30,
-        },
         result: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            minWidth: 150,
-            height: 75,
-            borderBottom: '1px dotted #555'
+            wrapper: {
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                marginTop: 30,
+            },
+            item: {
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                minWidth: 150,
+                height: 75,
+                borderBottom: '1px dotted #555'
+            },
+            number: {
+                fontFamily: 'Product Sans Black Regular',
+                fontSize: '2.5em',
+                marginLeft: 15,
+            },
         },
-        resultNumber: {
-            fontFamily: 'Product Sans Black Regular',
-            fontSize: '2.5em',
-            marginLeft: 15,
-        }
+        toolbar: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            margin: '30px 0 0',
+        },
+        buttonText: {
+            marginRight: 8,
+        },
     }
 
     calculateKcal = (item) => item.weight <= 0 ? 0 : (Number.parseInt(item.weight, 10) * Number.parseInt(item.kcal, 10) / 100);
 
-    onChangeInput = (weight, item) => this.props.onChangeInput(weight, item);
+    onChangeWeight = (weight, item) => this.props.onChangeWeight(weight, item);
+
+    onChangeRecipeName = (recipeName) => this.setState({ recipeName });
+
+    saveRecipe = () => {
+        fetch('http://localhost:3000/file', {
+            method: 'post',
+            headers: {
+                'Accept':'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: this.state.recipeName,
+                ingredients: this.props.data.map(({ number, weight }) => ({
+                    number,
+                    weight,
+                })),
+            }),
+        })
+            .then(json => json.json())
+            .then(console.log)
+            .catch(console.log);
+    }
 
     render() {
         return (
@@ -91,7 +129,7 @@ export class Recipe extends Component {
                             <td style={this.style.td}>
                                 <input
                                     value={item.weight}
-                                    onChange={(e) => this.onChangeInput(e.target.value, item)}
+                                    onChange={(e) => this.onChangeWeight(e.target.value, item)}
                                     onClick={e => e.stopPropagation()}
                                     type="number"
                                 />
@@ -101,26 +139,36 @@ export class Recipe extends Component {
                     ))}
                     </tbody>
                 </table>
-                <div style={this.style.footer}>
+                <div style={this.style.result.wrapper}>
                     <div style={this.style.name}>Sammanställning</div>
-                    <div style={this.style.result}>
+                    <div style={this.style.result.item}>
                         <em>Antal ingredienser:</em>
-                        <span style={this.style.resultNumber}>
+                        <span style={this.style.result.number}>
                             {this.props.data.length}
                         </span>
                     </div>
-                    <div style={this.style.result}>
+                    <div style={this.style.result.item}>
                         <em>Total vikt:</em>
-                        <span style={this.style.resultNumber}>
+                        <span style={this.style.result.number}>
                             {this.props.data.map(item => item.weight <= 0 ? 0 : Number.parseInt(item.weight, 10)).reduce((a, b) => a + b)} gram
                         </span>
                     </div>
-                    <div style={this.style.result}>
+                    <div style={this.style.result.item}>
                         <em>Total kcal:</em>
-                        <span style={this.style.resultNumber}>
+                        <span style={this.style.result.number}>
                             {this.props.data.map(item => this.calculateKcal(item)).reduce((a, b) => a + b)} kcal
                         </span>
                     </div>
+                </div>
+                <div style={this.style.toolbar}>
+                        <input
+                            value={this.state.recipeName}
+                            onChange={(e) => this.onChangeRecipeName(e.target.value)}
+                        />
+                        <Button onClick={this.saveRecipe}>
+                            <span style={this.style.buttonText}>Spara</span>
+                            <MaterialIcon size="small" icon="save" color="#eee" />
+                        </Button>
                 </div>
             </div>
         );

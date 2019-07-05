@@ -11,6 +11,7 @@ class Button extends PureComponent {
         backgroundColor: 'steelblue',
         color: '#eee',
         whiteSpace: 'nowrap',
+        cursor: 'pointer',
         ...styles.boxWithShadow,
     }
 
@@ -18,7 +19,7 @@ class Button extends PureComponent {
         const { icon, onClick } = this.props;
         return (
             <button style={this.style} onClick={onClick}>
-                <MaterialIcon icon={icon} size="large" />
+                {this.props.children}
             </button>
         );
     }
