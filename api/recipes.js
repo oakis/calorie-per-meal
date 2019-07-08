@@ -1,18 +1,18 @@
 import fs from 'fs';
 
-export const saveFile = async (req, res) => {
+export const saveFile = async (args) => {
     let file = [];
     try {
-        file = JSON.parse(await fs.readFileSync('./data/recipes.json'));
+        file = JSON.parse(fs.readFileSync('./data/recipes.json'));
     } catch(e) {
         console.log('File was empty or corrupt', e);
     }
 
-    file.push(req.body);
+    file.push(args);
 
-    fs.writeFile('./data/recipes.json', JSON.stringify(file, null, 2), (err) => {
-        if (err) return res.status(500).json({ message: err });
+    await fs.writeFile('./data/recipes.json', JSON.stringify(file, null, 2), async (err) => {
+        if (err) return console.log(err);
         console.log('Recipe was saved.');
-        return res.status(200).json({ message: 'OK' });
     });
+    return args;
 }

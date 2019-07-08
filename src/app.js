@@ -30,9 +30,9 @@ class App extends React.Component {
     }
 
     foodById = async (number) => {
-        const { foodById } = await graphql(`
+        const { foods } = await graphql(`
             query GetFoodById {
-                foodById(number: "${number}") {
+                foods(number: "${number}") {
                     name
                     number
                     weight
@@ -45,8 +45,8 @@ class App extends React.Component {
                 }
             }
         `);
-        console.log('Found item', foodById[0]);
-        return foodById[0];
+        console.log('Found item', foods[0]);
+        return foods[0];
     }
 
     addItem = async (number) => {

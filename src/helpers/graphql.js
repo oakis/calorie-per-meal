@@ -1,4 +1,4 @@
-export default (query) => fetch(
+export default (query, variables) => fetch(
     'http://localhost:3000/graphql',
     {
         method: 'post',
@@ -8,6 +8,7 @@ export default (query) => fetch(
         },
         body: JSON.stringify({
             query,
+            variables,
         })
     })
     .then(json => json.json())

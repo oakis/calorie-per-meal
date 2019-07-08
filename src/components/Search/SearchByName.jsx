@@ -56,13 +56,13 @@ export class SearchByName extends Component {
         event.preventDefault();
         const search = await graphql(`
             query FindFood {
-                foodByName(name: "${this.state.searchInput}") {
+                foods(name: "${this.state.searchInput}") {
                     name
                     number
                 }
             }
         `);
-        const searchResults = search.foodByName;
+        const searchResults = search.foods;
         console.log(`Found ${searchResults.length} foods.`, searchResults);
         this.setState({
             searchResults,

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import graphql from '../../helpers/graphql';
 import styles from '../../styles';
 import IconButton from '../common/IconButton.jsx';
 import MaterialIcon from 'material-icons-react';
@@ -66,39 +67,53 @@ export class Recipe extends Component {
             },
         },
         toolbar: {
-            display: 'flex',
-            justifyContent: 'flex-end',
-            margin: '30px 0 0',
-        },
-        buttonText: {
-            marginRight: 8,
+            wrapper: {
+                display: 'flex',
+                justifyContent: 'space-between',
+                margin: '30px 0 0',
+            },
+            left: {
+                display: 'flex',
+                justifyContent: 'flex-start',
+            },
+            right: {
+                display: 'flex',
+                justifyContent: 'flex-end',
+            },
+            buttonText: {
+                marginRight: 8,
+            },
         },
     }
 
     calculateKcal = (item) => item.weight <= 0 ? 0 : (Number.parseInt(item.weight, 10) * Number.parseInt(item.kcal, 10) / 100);
 
+    loadRecipes = () => {}
+
     onChangeWeight = (weight, item) => this.props.onChangeWeight(weight, item);
 
     onChangeRecipeName = (recipeName) => this.setState({ recipeName });
 
-    saveRecipe = () => {
-        fetch('http://localhost:3000/file', {
-            method: 'post',
-            headers: {
-                'Accept':'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: this.state.recipeName,
-                ingredients: this.props.data.map(({ number, weight }) => ({
-                    number,
-                    weight,
-                })),
-            }),
-        })
-            .then(json => json.json())
-            .then(console.log)
-            .catch(console.log);
+    saveRecipe = async () => {
+        const name = this.state.recipeName;
+        const ingredients = this.props.data.map(({ number, weight }) => ({
+            number,
+            weight,
+        }));
+        await graphql(`
+            mutation Recipe($name: String!, $ingredients: [IngredientInput]) {
+                recipe(name: $name, ingredients: $ingredients) {
+                    name
+                    ingredients {
+                        number
+                        weight
+                    }
+                }
+            }
+        `, {
+            "name": name,
+            "ingredients": ingredients
+        });
     }
 
     render() {
@@ -160,7 +175,14 @@ export class Recipe extends Component {
                         </span>
                     </div>
                 </div>
-                <div style={this.style.toolbar}>
+                <div style={this.style.toolbar.wrapper}>
+                    <div style={this.style.toolbar.left}>
+                        <Button onClick={this.loadRecipes}>
+                            <span style={this.style.toolbar.buttonText}>Ladda</span>
+                            <MaterialIcon size="small" icon="folder" color="#eee" />
+                        </Button>
+                    </div>
+                    <div style={this.style.toolbar.right}>
                         <input
                             value={this.state.recipeName}
                             onChange={(e) => this.onChangeRecipeName(e.target.value)}
@@ -169,6 +191,7 @@ export class Recipe extends Component {
                             <span style={this.style.buttonText}>Spara</span>
                             <MaterialIcon size="small" icon="save" color="#eee" />
                         </Button>
+                    </div>
                 </div>
             </div>
         );
