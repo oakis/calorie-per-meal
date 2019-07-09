@@ -93,7 +93,7 @@ export class SearchByName extends Component {
                         onClick={this.foodByName}
                         color="steelblue"
                     >
-                        <MaterialIcon icon="search" size="large" />
+                        <MaterialIcon icon="search" size="small" color="#eee" />
                     </Button>
                 </form>
                 <br />

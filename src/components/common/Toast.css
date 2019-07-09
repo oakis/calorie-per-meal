@@ -1,0 +1,19 @@
+.animate-toast.enter { 
+    opacity: 0;
+    transform: translateY(-15px) translateX(-50%);
+}
+
+.animate-toast.enter-done { 
+    opacity: 1;
+    transform: translateY(0px) translateX(-50%);
+}
+
+.animate-toast.exit { 
+    opacity: 0;
+    transform: translateY(-15px) translateX(-50%);
+}
+
+.animate-toast {
+    transform: translateY(0px) translateX(-50%);
+    transition: all 500ms ease-in-out;
+}
