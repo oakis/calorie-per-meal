@@ -188,7 +188,7 @@ export class Recipe extends Component {
                             onChange={(e) => this.onChangeRecipeName(e.target.value)}
                         />
                         <Button onClick={this.saveRecipe}>
-                            <span style={this.style.buttonText}>Spara</span>
+                            <span style={this.style.toolbar.buttonText}>Spara</span>
                             <MaterialIcon size="small" icon="save" color="#eee" />
                         </Button>
                     </div>

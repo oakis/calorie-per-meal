@@ -5,6 +5,7 @@ import styles from '../../styles/index.js';
 class Button extends PureComponent {
     style = {
         display: 'flex',
+        alignItems: 'center',
         padding: '15px 20px',
         marginLeft: 8,
         fontSize: '1.2em',
