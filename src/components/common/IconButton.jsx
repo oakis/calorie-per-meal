@@ -4,7 +4,7 @@ import MaterialIcon from 'material-icons-react';
 class IconButton extends PureComponent {
     style = {
         border: 0,
-        color: 'transparant',
+        backgroundColor: 'transparent',
         cursor: 'pointer',
         padding: 0,
         position: 'relative',
