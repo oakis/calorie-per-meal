@@ -1,3 +1,4 @@
+import fs from 'fs';
 import {
     GraphQLObjectType,
     GraphQLSchema,
@@ -6,7 +7,7 @@ import {
     GraphQLNonNull,
     GraphQLInputObjectType,
 } from 'graphql';
-import { saveFile } from '../api/recipes.js';
+import { saveRecipe, loadRecipes } from '../api/recipes.js';
 import foods from './foods.json';
 
 const FoodType = new GraphQLObjectType({
@@ -54,6 +55,9 @@ const RecipeType = new GraphQLObjectType({
         ingredients: {
             type: new GraphQLList(IngredientsType)
         },
+        id: {
+            type: new GraphQLNonNull(GraphQLString)
+        },
     })
 });
 
@@ -80,10 +84,19 @@ const IngredientsInput = new GraphQLInputObjectType({
 const IngredientsType = new GraphQLObjectType({
     name: 'Ingredient',
     fields: () => ({
+        name: {
+            type: GraphQLString,
+        },
         number: {
             type: GraphQLString,
         },
         weight: {
+            type: GraphQLString,
+        },
+        nutrition: {
+            type: new GraphQLList(NutritionType)
+        },
+        kcal: {
             type: GraphQLString,
         },
     })
@@ -107,11 +120,32 @@ export const schema = new GraphQLSchema({
                 },
                 resolve: (root, args) => {
                     if (args.number) {
-                        return foodById(args);
+                        return [foodById(args.number)];
                     } else if (args.name) {
-                        return foodByName(args);
+                        return foodByName(args.name);
                     }
                     return foods;
+                },
+            },
+            recipes: {
+                type: new GraphQLList(RecipeType),
+                args: {
+                    id: {
+                        name: 'id',
+                        type: GraphQLString
+                    },
+                    name: {
+                        name: 'name',
+                        type: GraphQLString
+                    }
+                },
+                resolve: (root, args) => {
+                    if (args.id) {
+                        return loadRecipe(args.id);
+                    } else if (args.name) {
+                        return findRecipes(args.name);
+                    }
+                    return loadRecipes();
                 },
             }
         })
@@ -127,18 +161,38 @@ export const schema = new GraphQLSchema({
                     },
                     ingredients: {
                         type: new GraphQLList(IngredientsInput)
-                    }
+                    },
                 },
-                resolve: async (root, args) => await saveFile(args),
+                resolve: async (root, args) => await saveRecipe(args),
             }
         }),
     }),
 });
 
-const foodById = (args) => [foods.find(data => data.number === args.number)];
+const foodById = (number) => foods.find(data => data.number === number);
 
-const foodByName = (args) => foods.filter(data => data.name.includes(args.name));
+const foodByName = (name) => foods.filter(data => new RegExp(name, 'i').test(data.name) === true);
+
+const loadRecipe = (id) => {
+    const data = loadRecipes().filter(data => data.id.includes(id));
+    return data.map(recipe => ({
+        ...recipe,
+        ingredients: [
+            ...recipe.ingredients.map(ingredient => {
+                const food = foodById(ingredient.number);
+                return {
+                    ...food,
+                    weight: ingredient.weight,
+                    kcal: food.nutrition.find(nutrition => nutrition.name === 'Energi (kcal)').value,
+                }
+            })
+        ]
+    }));
+};
+
+const findRecipes = (name) => loadRecipes().filter(data => new RegExp(name, 'i').test(data.name) === true);
 
 export const root = {
     foods: () => foods,
+    recipes: loadRecipes(),
 };

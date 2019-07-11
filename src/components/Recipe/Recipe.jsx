@@ -5,10 +5,12 @@ import IconButton from '../common/IconButton.jsx';
 import MaterialIcon from 'material-icons-react';
 import Button from '../common/Button.jsx';
 import Toast from '../common/Toast.jsx';
+import { SearchRecipe } from './SearchRecipe.jsx';
 
 export class Recipe extends Component {
 
     state = {
+        loadedRecipeName: '',
         recipeName: '',
         saveSuccess: false,
     }
@@ -90,7 +92,22 @@ export class Recipe extends Component {
 
     calculateKcal = (item) => item.weight <= 0 ? 0 : (Number.parseInt(item.weight, 10) * Number.parseInt(item.kcal, 10) / 100);
 
-    loadRecipes = () => {}
+    loadRecipe = async (id) => {
+        return await graphql(`
+            query LoadRecipe {
+                recipes(id: "${id}") {
+                    id
+                    name
+                    ingredients {
+                        name
+                        number
+                        weight
+                        kcal
+                    }
+                }
+            }
+        `);
+    }
 
     onChangeWeight = (weight, item) => this.props.onChangeWeight(weight, item);
 
@@ -129,68 +146,75 @@ export class Recipe extends Component {
                     close={() => this.setState({ saveSuccess: false })}
                 />
                 <div style={{...this.style.wrapper, ...this.props.style}}>
-                    <div style={{ ...this.style.name, marginBottom: 30 }}>Recept</div>
-                    <table style={this.style.table}>
-                        <thead>
-                            <tr style={this.style.thead}>
-                                <th></th>
-                                <th>Ingrediens</th>
-                                <th>Vikt i gram</th>
-                                <th>Kcal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {this.props.data.map((item, i) => (
-                            <tr style={this.style.tr} key={i} onClick={() => this.props.showItem(item.number)}>
-                                <td style={this.style.td}>
-                                    <IconButton
-                                        onClick={() => this.props.removeItem(item)}
-                                        icon="delete"
-                                        size="small"
-                                        color="tomato"
-                                    />
-                                </td>
-                                <td style={this.style.td}>{item.name}</td>
-                                <td style={this.style.td}>
-                                    <input
-                                        value={item.weight}
-                                        onChange={(e) => this.onChangeWeight(e.target.value, item)}
-                                        onClick={e => e.stopPropagation()}
-                                        type="number"
-                                    />
-                                </td>
-                                <td style={this.style.td}>{this.calculateKcal(item)}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                    <div style={this.style.result.wrapper}>
-                        <div style={this.style.name}>Sammanställning</div>
-                        <div style={this.style.result.item}>
-                            <em>Antal ingredienser:</em>
-                            <span style={this.style.result.number}>
-                                {this.props.data.length}
-                            </span>
-                        </div>
-                        <div style={this.style.result.item}>
-                            <em>Total vikt:</em>
-                            <span style={this.style.result.number}>
-                                {this.props.data.map(item => item.weight <= 0 ? 0 : Number.parseInt(item.weight, 10)).reduce((a, b) => a + b)} gram
-                            </span>
-                        </div>
-                        <div style={this.style.result.item}>
-                            <em>Total kcal:</em>
-                            <span style={this.style.result.number}>
-                                {this.props.data.map(item => this.calculateKcal(item)).reduce((a, b) => a + b)} kcal
-                            </span>
-                        </div>
-                    </div>
+                    <div style={{ ...this.style.name, marginBottom: 30 }}>Recept {this.state.loadedRecipeName.length > 0 && `(${this.state.loadedRecipeName})`}</div>
+                    {this.props.data.length > 0 &&
+                        <Fragment>
+                            <table style={this.style.table}>
+                                <thead>
+                                    <tr style={this.style.thead}>
+                                        <th></th>
+                                        <th>Ingrediens</th>
+                                        <th>Vikt i gram</th>
+                                        <th>Kcal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {this.props.data.map((item, i) => (
+                                    <tr style={this.style.tr} key={i} onClick={() => this.props.showItem(item.number)}>
+                                        <td style={this.style.td}>
+                                            <IconButton
+                                                onClick={() => this.props.removeItem(item)}
+                                                icon="delete"
+                                                size="small"
+                                                color="tomato"
+                                            />
+                                        </td>
+                                        <td style={this.style.td}>{item.name}</td>
+                                        <td style={this.style.td}>
+                                            <input
+                                                value={item.weight}
+                                                onChange={(e) => this.onChangeWeight(e.target.value, item)}
+                                                onClick={e => e.stopPropagation()}
+                                                type="number"
+                                            />
+                                        </td>
+                                        <td style={this.style.td}>{this.calculateKcal(item)}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                            <div style={this.style.result.wrapper}>
+                                <div style={this.style.name}>Sammanställning</div>
+                                <div style={this.style.result.item}>
+                                    <em>Antal ingredienser:</em>
+                                    <span style={this.style.result.number}>
+                                        {this.props.data.length}
+                                    </span>
+                                </div>
+                                <div style={this.style.result.item}>
+                                    <em>Total vikt:</em>
+                                    <span style={this.style.result.number}>
+                                        {this.props.data.length > 0 ? this.props.data.map(item => item.weight <= 0 ? 0 : Number.parseInt(item.weight, 10)).reduce((a, b) => a + b) : 0} gram
+                                    </span>
+                                </div>
+                                <div style={this.style.result.item}>
+                                    <em>Total kcal:</em>
+                                    <span style={this.style.result.number}>
+                                        {this.props.data.length > 0 ? this.props.data.map(item => this.calculateKcal(item)).reduce((a, b) => a + b) : 0} kcal
+                                    </span>
+                                </div>
+                            </div>
+                        </Fragment>
+                    }
                     <div style={this.style.toolbar.wrapper}>
                         <div style={this.style.toolbar.left}>
-                            <Button onClick={this.loadRecipes}>
-                                <span style={this.style.toolbar.buttonText}>Ladda</span>
-                                <MaterialIcon size="small" icon="folder" color="#eee" />
-                            </Button>
+                            <SearchRecipe onItemClick={async (id) => {
+                                const loadedRecipe = await this.loadRecipe(id);
+                                this.props.setData(loadedRecipe);
+                                this.setState({
+                                    loadedRecipeName: loadedRecipe.recipes[0].name
+                                });
+                            }} />
                         </div>
                         <div style={this.style.toolbar.right}>
                             <input

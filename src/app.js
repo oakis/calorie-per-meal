@@ -107,15 +107,16 @@ class App extends React.Component {
                 <h1 style={this.style.title}>CALORIE CALCULATOR</h1>
                 <SearchByName onItemClick={this.addItem} />
                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}>
-                    {ingredients.length > 0 &&
-                        <Recipe
-                            data={ingredients}
-                            removeItem={this.removeItem}
-                            showItem={this.showItem}
-                            onChangeWeight={(weight, item) => this.updateWeight(weight, item)}
-                            style={selectedItem.name ? { marginRight: 8 } : null}
-                        />
-                    }
+                    <Recipe
+                        data={ingredients}
+                        setData={data => this.setState({
+                            ingredients: data.recipes[0].ingredients
+                        })}
+                        removeItem={this.removeItem}
+                        showItem={this.showItem}
+                        onChangeWeight={(weight, item) => this.updateWeight(weight, item)}
+                        style={selectedItem.name ? { marginRight: 8 } : null}
+                    />
                     {selectedItem.name !== undefined &&
                         <SelectedItem
                             data={selectedItem}

@@ -2,29 +2,26 @@ import React, { Component } from 'react';
 import Search from '../common/Search.jsx';
 import graphql from '../../helpers/graphql';
 
-export class SearchByName extends Component {
+export class SearchRecipe extends Component {
 
-    foodByName = async (input) => {
+    recipeByName = async (input) => {
         const data = await graphql(`
-            query FindFood {
-                foods(name: "${input}") {
+            query LoadRecipes {
+                recipes(name: "${input}") {
                     name
-                    number
+                    id
                 }
             }
         `);
-        return data.foods.map(food => ({
-            id: food.number,
-            name: food.name,
-        }));
+        return data.recipes;
     }
 
     render() {
         return (
             <Search
-                onSearch={this.foodByName}
+                onSearch={this.recipeByName}
                 onItemClick={this.props.onItemClick}
-                placeholder="Sök råvara..."
+                placeholder="Sök recept..."
             />
         );
     };
