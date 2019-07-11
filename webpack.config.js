@@ -1,5 +1,5 @@
 module.exports = {
-    entry: ['babel-polyfill', './src/app.js'],
+    entry: ['@babel/polyfill', './src/app.js'],
     output: {
         path: __dirname + '/public',
         filename: 'bundle.js',
@@ -12,7 +12,8 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['react', 'env', 'stage-0'],
+                        presets: ['@babel/preset-react', '@babel/preset-env'],
+                        plugins: ['@babel/plugin-proposal-class-properties']
                     },
                 },
             },
