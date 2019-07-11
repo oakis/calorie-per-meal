@@ -25,6 +25,7 @@ export class SearchByName extends Component {
                 onSearch={this.foodByName}
                 onItemClick={this.props.onItemClick}
                 placeholder="Sök råvara..."
+                style={{ marginBottom: 16 }}
             />
         );
     };

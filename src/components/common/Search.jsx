@@ -16,7 +16,6 @@ class Search extends Component {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginBottom: 16,
         },
         input: {
             flex: 1,
@@ -65,7 +64,7 @@ class Search extends Component {
         return (
             <Fragment>
                 <form
-                    style={this.style.form}
+                    style={{...this.props.style, ...this.style.form}}
                 >
                     <input
                         ref={this.inputRef}
