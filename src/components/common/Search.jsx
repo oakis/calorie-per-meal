@@ -46,9 +46,35 @@ class Search extends Component {
         },
     }
 
-    inputRef = React.createRef()
+    inputRef = React.createRef();
+
+    componentDidMount() {
+        document.addEventListener('click', this.onClick);
+        document.addEventListener('keydown', this.onKeydown);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', this.onClick);
+        document.removeEventListener('keydown', this.onKeydown);
+    }
 
     inputRefReady = () => (this.inputRef && this.inputRef.current !== null) === true;
+
+    onClick = (event) => {
+        if (event.target.nodeName !== 'INPUT' && this.state.searchResults.length > 0) {
+            this.setState({
+                searchResults: []
+            });
+        }
+    }
+
+    onKeydown = (event) => {
+        if (event.key === 'Escape' && this.state.searchResults.length > 0) {
+            this.setState({
+                searchResults: []
+            });
+        }
+    }
 
     onInputChange = (event) => this.setState({ searchInput: event.target.value });
 
