@@ -15,5 +15,5 @@
 
 .animate-search {
     max-height: 0px;
-    transition: max-height 150ms ease-in-out;
+    transition: all 150ms ease-in-out;
 }
