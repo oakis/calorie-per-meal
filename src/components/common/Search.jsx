@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import MaterialIcon from 'material-icons-react';
 import Button from '../common/Button.jsx';
 import styles from '../../styles';
+import './Search.css';
 
 class Search extends Component {
     state = {
@@ -14,6 +16,7 @@ class Search extends Component {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
+            marginBottom: 16,
         },
         input: {
             flex: 1,
@@ -28,7 +31,6 @@ class Search extends Component {
             width: 0,
             height: 300,
             overflowY: 'scroll',
-            visibility: 'hidden',
             backgroundColor: '#f9f9f9',
             ...styles.boxWithShadow,
             paddingInlineStart: 0,
@@ -85,44 +87,48 @@ class Search extends Component {
                         <MaterialIcon icon="search" size="small" color="#eee" />
                     </Button>
                 </form>
-                <br />
-                <ul
-                    style={
-                        {
-                            ...this.style.searchResults,
-                            top: inputRefReady && shouldPlaceUnderInput ? (this.inputRef.current.offsetTop + this.inputRef.current.scrollHeight) - 2 : null,
-                            bottom: inputRefReady && !shouldPlaceUnderInput ? (window.innerHeight - this.inputRef.current.offsetTop) - 2 : null,
-                            left: inputRefReady ? this.inputRef.current.offsetLeft : 0,
-                            width: inputRefReady ? this.inputRef.current.scrollWidth : 0,
-                            visibility: inputRefReady && searchResults.length > 0 ? 'visible' : 'hidden',
-                            borderTopLeftRadius: shouldPlaceUnderInput ? 0 : 5,
-                            borderTopRightRadius: shouldPlaceUnderInput ? 0 : 5,
-                            borderBottomLeftRadius: !shouldPlaceUnderInput ? 0 : 5,
-                            borderBottomRightRadius: !shouldPlaceUnderInput ? 0 : 5,
-                        }
+                <TransitionGroup>
+                    {searchResults.length > 0 &&
+                        <CSSTransition className='animate-search' timeout={150}>
+                            <ul
+                                style={
+                                    {
+                                        ...this.style.searchResults,
+                                        top: inputRefReady && shouldPlaceUnderInput ? (this.inputRef.current.offsetTop + this.inputRef.current.scrollHeight) - 2 : null,
+                                        bottom: inputRefReady && !shouldPlaceUnderInput ? (window.innerHeight - this.inputRef.current.offsetTop) - 2 : null,
+                                        left: inputRefReady ? this.inputRef.current.offsetLeft : 0,
+                                        width: inputRefReady ? this.inputRef.current.scrollWidth : 0,
+                                        borderTopLeftRadius: shouldPlaceUnderInput ? 0 : 5,
+                                        borderTopRightRadius: shouldPlaceUnderInput ? 0 : 5,
+                                        borderBottomLeftRadius: !shouldPlaceUnderInput ? 0 : 5,
+                                        borderBottomRightRadius: !shouldPlaceUnderInput ? 0 : 5,
+                                    }
+                                }
+                            >
+                                {searchResults.map(result => (
+                                    <li
+                                        key={result.id}
+                                        style={this.style.searchItem}
+                                        onMouseOver={e => {
+                                            e.currentTarget.style.backgroundColor = '#efefef';
+                                        }}
+                                        onMouseOut={e => {
+                                            e.currentTarget.style.backgroundColor = '';
+                                        }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            this.props.onItemClick(result.id);
+                                            this.setState({
+                                                searchInput: '',
+                                                searchResults: [],
+                                            })
+                                        }}
+                                    >{result.name}</li>
+                                ))}
+                            </ul>
+                        </CSSTransition>
                     }
-                >
-                    {searchResults.map(result => (
-                        <li
-                            key={result.id}
-                            style={this.style.searchItem}
-                            onMouseOver={e => {
-                                e.currentTarget.style.backgroundColor = '#efefef';
-                            }}
-                            onMouseOut={e => {
-                                e.currentTarget.style.backgroundColor = '';
-                            }}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                this.props.onItemClick(result.id);
-                                this.setState({
-                                    searchInput: '',
-                                    searchResults: [],
-                                })
-                            }}
-                        >{result.name}</li>
-                    ))}
-                </ul>
+                </TransitionGroup>
             </Fragment>
         );
     };

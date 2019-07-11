@@ -1,0 +1,19 @@
+.animate-search.enter { 
+    opacity: 0;
+    max-height: 0px;
+}
+
+.animate-search.enter-done { 
+    opacity: 1;
+    max-height: 300px;
+}
+
+.animate-search.exit { 
+    opacity: 0;
+    max-height: 0px;
+}
+
+.animate-search {
+    max-height: 0px;
+    transition: max-height 150ms ease-in-out;
+}
